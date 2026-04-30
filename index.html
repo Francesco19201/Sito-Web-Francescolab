@@ -3,140 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Francescolab</title>
+<title>Francescolab Gaming</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* 1. RESET E BASE (ARIAL) */
+:root {
+  --red: #e01010;
+  --red-dim: rgba(224,16,16,0.12);
+  --red-glow: rgba(224,16,16,0.55);
+  --bg: #060608;
+  --surface: rgba(255,255,255,0.03);
+  --surface-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border-red: rgba(224,16,16,0.35);
+  --text: #e8e8f0;
+  --text-muted: #666880;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
 body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #0a0a0a;
-  color: white;
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   overflow-x: hidden;
 }
 
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;
 }
 
-/* 2. TITOLI (HELVETICA) */
-h1, .section-title {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 900;
-  color: red;
-  text-transform: uppercase;
-  letter-spacing: -1px;
-  text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+canvas { position:fixed; top:0; left:0; z-index:0; pointer-events:none; }
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 40px;
+  background:rgba(6,6,8,0.75);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo {
+  font-family:'Orbitron',sans-serif; font-weight:900;
+  font-size:0.9rem; letter-spacing:3px; color:var(--red);
+  text-decoration:none; text-transform:uppercase;
+}
+.nav-links { display:flex; gap:32px; }
+.nav-links a {
+  font-size:0.72rem; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text-muted); text-decoration:none; font-weight:600;
+  transition:color 0.2s;
+}
+.nav-links a:hover { color:var(--text); }
+
+/* HERO */
+.hero {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:120px 20px 80px; overflow:hidden;
 }
 
-header {
-  text-align: center;
-  padding: 50px 20px;
-  background: radial-gradient(circle, #1a0000, #000);
+.hero-orb {
+  position:absolute; width:700px; height:700px; border-radius:50%;
+  background:radial-gradient(circle, rgba(224,16,16,0.15) 0%, transparent 70%);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none;
+  animation:pulse-orb 4s ease-in-out infinite alternate;
+}
+@keyframes pulse-orb {
+  from { opacity:0.5; transform:translate(-50%,-50%) scale(1); }
+  to   { opacity:1;   transform:translate(-50%,-50%) scale(1.2); }
 }
 
-header img {
-  width: 140px;
-  animation: glow 2s infinite alternate;
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  border:1px solid var(--border-red); background:var(--red-dim);
+  padding:7px 18px; border-radius:100px;
+  font-size:0.68rem; letter-spacing:3px; text-transform:uppercase;
+  font-weight:700; color:var(--red); margin-bottom:36px;
+  animation:fade-up 0.7s ease both;
+}
+.hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--red); animation:blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.hero img {
+  width:96px; height:96px; border-radius:50%; object-fit:cover;
+  border:2px solid var(--border-red);
+  margin-bottom:28px;
+  animation:fade-up 0.85s ease both, glow-img 3s ease-in-out infinite alternate;
+}
+@keyframes glow-img {
+  from { box-shadow:0 0 20px rgba(224,16,16,0.3), 0 0 0 4px rgba(224,16,16,0.08); }
+  to   { box-shadow:0 0 55px rgba(224,16,16,0.65), 0 0 0 8px rgba(224,16,16,0.12); }
 }
 
-@keyframes glow {
-  from { filter: drop-shadow(0 0 5px red); }
-  to { filter: drop-shadow(0 0 25px red); }
+.hero h1 {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.8rem,10vw,7rem);
+  font-weight:900; letter-spacing:-2px; line-height:0.9;
+  text-transform:uppercase; color:#fff;
+  animation:fade-up 1s ease both; position:relative;
+}
+.hero h1 .accent { color:var(--red); }
+.hero h1::after {
+  content:attr(data-text);
+  position:absolute; top:0; left:0; color:var(--red);
+  clip-path:polygon(0 0,100% 0,100% 30%,0 30%);
+  opacity:0; animation:glitch 7s infinite;
+}
+@keyframes glitch {
+  0%,93%,100%{opacity:0;transform:none}
+  94%{opacity:.8;transform:translate(-3px,1px) skewX(3deg)}
+  96%{opacity:.8;transform:translate(3px,-1px) skewX(-2deg)}
+  98%{opacity:0}
 }
 
-/* 3. BOX DI TESTO (VERDANA) */
-.box {
-  font-family: Verdana, Geneva, sans-serif;
-  background: rgba(20,20,20,0.9);
-  border: 1px solid red;
-  padding: 25px;
-  margin-bottom: 25px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(255,0,0,0.2);
-  transition: 0.3s;
-  line-height: 1.8;
-  font-size: 16px;
-  text-align: justify;
+.hero-sub {
+  margin-top:20px; font-size:0.8rem; letter-spacing:5px;
+  text-transform:uppercase; color:var(--text-muted); font-weight:600;
+  animation:fade-up 1.1s ease both;
+}
+.hero-sub span { color:var(--red); margin:0 8px; }
+
+.hero-cta {
+  margin-top:50px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;
+  animation:fade-up 1.25s ease both;
 }
 
-.box:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 30px red;
+.btn-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--red); color:#fff;
+  padding:14px 30px; border-radius:6px;
+  font-family:'Orbitron',sans-serif; font-size:0.65rem; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; text-decoration:none;
+  box-shadow:0 0 30px rgba(224,16,16,0.4);
+  transition:all 0.25s; position:relative; overflow:hidden;
+}
+.btn-primary::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+  transform:translateX(-100%); transition:transform 0.5s;
+}
+.btn-primary:hover::before { transform:translateX(100%); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 40px rgba(224,16,16,0.65); }
+
+.btn-outline {
+  display:inline-flex; align-items:center; gap:10px;
+  border:1px solid var(--border); color:var(--text-muted);
+  padding:14px 30px; border-radius:6px;
+  font-family:'Orbitron',sans-serif; font-size:0.65rem; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; text-decoration:none;
+  background:transparent; cursor:pointer; transition:all 0.25s;
+}
+.btn-outline:hover { border-color:var(--border-red); color:var(--text); background:var(--red-dim); }
+
+.scroll-hint {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  opacity:0.3; font-size:0.62rem; letter-spacing:3px; text-transform:uppercase;
+  animation:bob 2s ease-in-out infinite;
+}
+.scroll-hint::after { content:''; width:1px; height:40px; background:linear-gradient(to bottom,white,transparent); }
+@keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+/* STATS */
+.stats {
+  position:relative; z-index:1;
+  background:var(--surface);
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  display:grid; grid-template-columns:repeat(3,1fr);
+}
+.stat { padding:52px 20px; text-align:center; border-right:1px solid var(--border); }
+.stat:last-child { border-right:none; }
+.stat-num {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:900; color:var(--red);
+  letter-spacing:-2px; display:block; line-height:1; margin-bottom:10px;
+}
+.stat-label { font-size:0.68rem; letter-spacing:4px; text-transform:uppercase; color:var(--text-muted); font-weight:600; }
+
+/* SECTIONS */
+section {
+  position:relative; z-index:1;
+  padding:100px 20px;
+  max-width:1100px; margin:0 auto;
+}
+.section-label {
+  font-family:'Orbitron',sans-serif; font-size:0.62rem;
+  letter-spacing:4px; text-transform:uppercase; color:var(--red); font-weight:700;
+  margin-bottom:12px; display:flex; align-items:center; gap:12px;
+}
+.section-label::before { content:''; width:28px; height:1px; background:var(--red); }
+.section-title {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:900; letter-spacing:-1px; text-transform:uppercase;
+  color:#fff; line-height:1.1; margin-bottom:56px;
 }
 
-.container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 20px;
+/* CARDS */
+.cards-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:2px;
+}
+.card {
+  background:var(--surface); border:1px solid var(--border);
+  padding:36px 28px; position:relative; overflow:hidden;
+  opacity:0; transform:translateY(24px);
+  transition:opacity 0.55s ease, transform 0.55s ease, background 0.3s, border-color 0.3s;
+}
+.card.visible { opacity:1; transform:translateY(0); }
+.card:hover { background:var(--surface-hover); border-color:var(--border-red); }
+.card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  transform:scaleX(0); transition:transform 0.4s;
+}
+.card:hover::before { transform:scaleX(1); }
+.card-icon { font-size:2rem; margin-bottom:20px; display:block; }
+.card h3 {
+  font-family:'Orbitron',sans-serif; font-size:0.72rem; letter-spacing:2px;
+  text-transform:uppercase; font-weight:700; color:#fff; margin-bottom:12px;
+}
+.card p { font-size:0.88rem; line-height:1.85; color:var(--text-muted); font-weight:500; }
+
+/* DIVIDER */
+.divider {
+  position:relative; z-index:1; border:none; height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  max-width:1100px; margin:0 auto;
 }
 
-.btn {
-  display: block;
-  width: fit-content;
-  background: red;
-  padding: 15px 30px;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  margin: 30px auto;
-  box-shadow: 0 0 10px red;
-  transition: 0.3s;
-  font-weight: bold;
-  font-family: Arial, sans-serif;
-  text-align: center;
+/* VIDEOS */
+.videos-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px;
 }
-
-.btn:hover {
-  background: white;
-  color: red;
+.video-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden;
+  opacity:0; transform:translateY(24px);
+  transition:opacity 0.55s ease, transform 0.55s ease, border-color 0.3s;
 }
-
-.videos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
+.video-card.visible { opacity:1; transform:translateY(0); }
+.video-card:hover { border-color:var(--border-red); transform:translateY(-4px) !important; }
+.video-card iframe { width:100%; height:200px; border:none; display:block; }
+.video-label {
+  padding:14px 18px; font-size:0.68rem; letter-spacing:2px;
+  text-transform:uppercase; color:var(--text-muted); font-weight:600;
+  border-top:1px solid var(--border); display:flex; align-items:center; gap:8px;
 }
+.video-label::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--red); animation:blink 1.4s infinite; }
 
-iframe {
-  width: 100%;
-  height: 180px;
-  border-radius: 12px;
-  border: none;
-}
-
+/* FOOTER */
 footer {
-  text-align: center;
-  padding: 40px;
-  color: #555;
-  font-size: 12px;
-  font-family: Arial, sans-serif;
+  position:relative; z-index:1;
+  border-top:1px solid var(--border);
+  padding:36px 40px;
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:16px;
 }
+.footer-logo { font-family:'Orbitron',sans-serif; font-size:0.72rem; font-weight:900; letter-spacing:4px; color:var(--red); text-transform:uppercase; }
+.footer-copy { font-size:0.7rem; color:var(--text-muted); letter-spacing:1px; }
 
-/* Pulsante musica flottante */
+/* MUSIC BTN */
 #musicBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999;
-  background: rgba(20,20,20,0.9);
-  border: 1px solid red;
-  color: white;
-  font-size: 22px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 12px rgba(255,0,0,0.5);
-  transition: 0.3s;
+  position:fixed; bottom:24px; right:24px; z-index:999;
+  width:48px; height:48px; border-radius:50%;
+  background:rgba(6,6,8,0.9); border:1px solid var(--border-red);
+  color:#fff; font-size:18px; cursor:pointer;
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 20px rgba(224,16,16,0.3);
+  transition:all 0.3s; display:flex; align-items:center; justify-content:center;
 }
-#musicBtn:hover {
-  box-shadow: 0 0 25px red;
-  transform: scale(1.1);
+#musicBtn:hover { box-shadow:0 0 35px rgba(224,16,16,0.6); transform:scale(1.1); }
+#musicBtn.playing { background:rgba(224,16,16,0.18); }
+
+@keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:640px){
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  .stats{grid-template-columns:1fr;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  footer{flex-direction:column;text-align:center;padding:28px 20px;}
 }
 </style>
 </head>
@@ -144,94 +301,144 @@ footer {
 
 <canvas id="particles"></canvas>
 
-<audio id="bgMusic" loop>
-  <source src="musica.mp3" type="audio/mpeg">
-  Il tuo browser non supporta l'elemento audio.
-</audio>
+
+<nav>
+  <a href="#" class="nav-logo">Francescolab</a>
+  <div class="nav-links">
+    <a href="#" onclick="event.preventDefault();document.getElementById('about').scrollIntoView({behavior:'smooth'})">Chi siamo</a>
+    <a href="social.html">Social</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-badge"><span class="hero-badge-dot"></span>Canale Attivo</div>
+  <img src="francescolab_logo.jpg" alt="Logo Francescolab">
+  <h1 data-text="FRANCESCOLAB">FRANCESCO<span class="accent">LAB</span></h1>
+  <p class="hero-sub">Gaming <span>•</span> Strategie <span>•</span> Tecnologia</p>
+  <div class="hero-cta">
+    <a href="https://www.youtube.com/@Francescolab" target="_blank" class="btn-primary">▶&nbsp; Visita il Canale</a>
+    <button class="btn-outline" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">Scopri di più</button>
+  </div>
+  <div class="scroll-hint">Scorri</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Qualità</span></div>
+  <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Passione</span></div>
+  <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Gaming</span></div>
+</div>
+
+<hr class="divider">
+
+<section id="about">
+  <div class="section-label">Chi siamo</div>
+  <h2 class="section-title">Una piattaforma<br>per ogni giocatore</h2>
+  <div class="cards-grid">
+    <div class="card">
+      <span class="card-icon">🎮</span>
+      <h3>La Piattaforma</h3>
+      <p>Francescolab è dedicata al mondo del gaming, pensata per offrire contenuti di qualità a giocatori di ogni livello, unendo intrattenimento e informazione.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎬</span>
+      <h3>Contenuti Curati</h3>
+      <p>Gameplay curati, guide dettagliate e approfondimenti strategici sui titoli più rilevanti, realizzati con attenzione ai dettagli per un'esperienza professionale.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">⚙️</span>
+      <h3>Aspetti Tecnici</h3>
+      <p>Configurazioni, accessori e ottimizzazione delle prestazioni: ti aiutiamo a ottenere il massimo dal tuo setup, sia su console che su PC.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">👥</span>
+      <h3>Community</h3>
+      <p>Uno spazio in cui migliorarsi, restare aggiornati e scoprire nuove opportunità di gioco insieme a una community di appassionati come te.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="video">
+  <div class="section-label">Contenuti Recenti</div>
+  <h2 class="section-title">Ultimi Video</h2>
+  <div class="videos-grid">
+    <div class="video-card">
+      <!-- Sostituisci VIDEO1 con il tuo ID YouTube -->
+      <iframe src="https://www.youtube.com/embed/sosrRfCzwvQ" allowfullscreen loading="lazy"></iframe>
+      <div class="video-label">In Evidenza</div>
+    </div>
+    <div class="video-card">
+      <!-- Sostituisci VIDEO2 con il tuo ID YouTube -->
+      <iframe src="https://www.youtube.com/embed/7j5HBPid168" allowfullscreen loading="lazy"></iframe>
+      <div class="video-label">In Evidenza</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:48px;">
+    <a href="https://www.youtube.com/@Francescolab/videos" target="_blank" class="btn-primary">▶&nbsp; Tutti i Video</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Francescolab</div>
+  <div class="footer-copy">© 2026 Francescolab — Gaming Experience</div>
+</footer>
 
 <button id="musicBtn" title="Musica" onclick="toggleMusic()">🎵</button>
 
-<header>
-  <img src="francescolab_logo.jpg" alt="Logo">
-  <h1>Francescolab</h1>
-  <p style="font-family: Arial;">Gaming • Strategie • Tecnologia</p>
-</header>
-
-<div class="container">
-  
-  <div class="box">
-    <strong>Francescolab</strong> è una piattaforma dedicata al mondo del gaming, pensata per offrire contenuti di qualità a giocatori di ogni livello. Il progetto nasce con l’obiettivo di unire intrattenimento e informazione, creando un punto di riferimento affidabile per chi desidera vivere il videogioco in modo più consapevole e coinvolgente.
-  </div>
-
-  <div class="box">
-    All’interno del canale troverai <strong>gameplay curati</strong>, guide dettagliate e approfondimenti strategici sui titoli più rilevanti del panorama videoludico. Ogni contenuto è realizzato con attenzione ai dettagli, per garantire chiarezza, utilità e un’esperienza visiva professionale.
-  </div>
-
-  <div class="box">
-    Particolare attenzione è dedicata anche agli <strong>aspetti tecnici</strong>: configurazioni, accessori e ottimizzazione delle prestazioni, con l’obiettivo di aiutarti a ottenere il massimo dal tuo setup, sia su console che su PC.
-  </div>
-
-  <div class="box">
-    Francescolab si rivolge a una <strong>community di appassionati</strong> che condividono la stessa passione per il gaming, offrendo uno spazio in cui migliorarsi, restare aggiornati e scoprire nuove opportunità di gioco.
-  </div>
-
-  <a href="https://www.youtube.com/@Francescolab" target="_blank" class="btn">VISITA IL CANALE YOUTUBE</a>
-
-  <h2 class="section-title">🔥 Ultime Live</h2>
-  <div class="videos">
-    <iframe src="https://www.youtube.com/embed/5e3sZh7n-zU?start=613"></iframe>
-    <iframe src="https://www.youtube.com/embed/pu5CUmNZm1M"></iframe>
-  </div>
-</div>
-
-<footer>© 2026 Francescolab - Gaming Experience</footer>
-
 <script>
 // =====================================================
-// 🎵 GESTIONE AUDIO MP3
+// 🎵 MUSICA MP3 — sostituisci QUI_IL_TUO_FILE.mp3 con il percorso del tuo file
+// Esempi: "musica/canzone.mp3" oppure "https://example.com/canzone.mp3"
 // =====================================================
-const audio = document.getElementById('bgMusic');
-const btn = document.getElementById('musicBtn');
+const bgAudio = new Audio("musica.mp3");
+bgAudio.loop = true;
+bgAudio.volume = 0.5;
+
+let isPlaying = false;
 
 function toggleMusic() {
-  if (audio.paused) {
-    audio.play().catch(error => {
-      console.log("Riproduzione bloccata dal browser. Clicca di nuovo.");
-    });
-    btn.textContent = '🔊';
-    btn.style.opacity = '1';
-    btn.style.boxShadow = '0 0 25px red';
+  const btn = document.getElementById('musicBtn');
+  if (isPlaying) {
+    bgAudio.pause();
+    btn.textContent = '🎵'; btn.classList.remove('playing'); isPlaying = false;
   } else {
-    audio.pause();
-    btn.textContent = '🎵';
-    btn.style.opacity = '0.5';
-    btn.style.boxShadow = '0 0 12px rgba(255,0,0,0.5)';
+    bgAudio.play().catch(()=>{});
+    btn.textContent = '🔊'; btn.classList.add('playing'); isPlaying = true;
   }
 }
 
-// =====================================================
-// EFFETTO PARTICELLE
-// =====================================================
+// PARTICLES
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-let particles = [];
-for(let i=0;i<80;i++){
-  particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, speed: Math.random()*0.5});
-}
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = "red";
-  particles.forEach(p=>{
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
-    p.y -= p.speed; if(p.y<0) p.y = canvas.height;
+let W = canvas.width = window.innerWidth;
+let H = canvas.height = window.innerHeight;
+const pts = Array.from({length:110}, ()=>({
+  x: Math.random()*W, y: Math.random()*H,
+  size: Math.random()*1.4+0.2,
+  speed: Math.random()*0.38+0.08,
+  opacity: Math.random()*0.45+0.08
+}));
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fillStyle=`rgba(224,16,16,${p.opacity})`; ctx.fill();
+    p.y-=p.speed; if(p.y<-2){p.y=H+2;p.x=Math.random()*W;}
   });
-  requestAnimationFrame(draw);
+  requestAnimationFrame(loop);
 }
-draw();
-window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-</script>
+loop();
+window.addEventListener('resize',()=>{ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; });
 
+// SCROLL REVEAL
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*90); obs.unobserve(e.target); }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.card,.video-card').forEach(el=>obs.observe(el));
+</script>
 </body>
 </html>
