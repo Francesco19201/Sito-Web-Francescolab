@@ -389,11 +389,175 @@ footer {
 @media(prefers-reduced-motion: reduce){
   *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
 }
+
+/* ════════════════════════════════
+   ANIMAZIONI CINEMATOGRAFICHE
+   ════════════════════════════════ */
+
+/* Intro overlay */
+#cinematic-intro {
+  position:fixed; inset:0; z-index:9999;
+  background:#000;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+  pointer-events:all;
+  transition:opacity 0.8s ease;
+}
+#cinematic-intro.fade-out { opacity:0; pointer-events:none; }
+#cinematic-intro.gone { display:none; }
+
+/* Letterbox bars */
+.lbox-top, .lbox-bot {
+  position:fixed; left:0; right:0; z-index:9998;
+  background:#000; height:80px;
+  transition:transform 1s cubic-bezier(.77,0,.18,1);
+}
+.lbox-top { top:0; transform:translateY(0); }
+.lbox-bot { bottom:0; transform:translateY(0); }
+.lbox-top.open { transform:translateY(-100%); }
+.lbox-bot.open { transform:translateY(100%); }
+
+/* Intro logo text */
+.intro-logo {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.5rem,6vw,3.5rem);
+  font-weight:900; letter-spacing:8px;
+  color:#fff; text-transform:uppercase;
+  opacity:0; transform:scaleX(0.6);
+  transition:opacity 0.6s ease, transform 0.6s cubic-bezier(.22,.68,0,1.2);
+}
+.intro-logo.show { opacity:1; transform:scaleX(1); }
+.intro-logo span { color:#e01010; }
+
+.intro-line {
+  width:0; height:1px; background:var(--red);
+  margin-top:12px;
+  transition:width 0.7s ease 0.3s;
+  box-shadow:0 0 12px rgba(224,16,16,0.8);
+}
+.intro-line.show { width:clamp(140px,30vw,300px); }
+
+.intro-sub {
+  font-family:'Syne',sans-serif;
+  font-size:0.65rem; letter-spacing:5px; text-transform:uppercase;
+  color:rgba(255,255,255,0.4); margin-top:10px;
+  opacity:0; transition:opacity 0.5s ease 0.6s;
+}
+.intro-sub.show { opacity:1; }
+
+/* Laser sweep */
+#laser {
+  position:fixed; top:0; left:-100%; width:3px; height:100%;
+  background:linear-gradient(to bottom, transparent, var(--red), rgba(224,16,16,0.3), transparent);
+  z-index:5; pointer-events:none;
+  box-shadow:0 0 20px rgba(224,16,16,0.8), 0 0 60px rgba(224,16,16,0.3);
+  opacity:0;
+}
+
+/* Scanlines */
+#scanlines {
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px
+  );
+  opacity:0.4;
+}
+
+/* Chromatic aberration su hover card */
+.card:hover h3 {
+  text-shadow: 1px 0 0 rgba(255,0,0,0.4), -1px 0 0 rgba(0,200,255,0.4);
+}
+
+/* Stats counter reveal */
+.stat-num {
+  transition: color 0.3s;
+}
+.stat.in-view .stat-num {
+  animation: count-glow 0.6s ease forwards;
+}
+@keyframes count-glow {
+  0%   { text-shadow: none; }
+  50%  { text-shadow: 0 0 30px rgba(224,16,16,0.9), 0 0 60px rgba(224,16,16,0.5); }
+  100% { text-shadow: 0 0 10px rgba(224,16,16,0.4); }
+}
+
+/* Section title cinematic reveal */
+.section-title {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s cubic-bezier(.77,0,.18,1);
+}
+.section-title.revealed { clip-path: inset(0 0% 0 0); }
+
+/* Section label slide */
+.section-label {
+  opacity:0; transform:translateX(-20px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.section-label.revealed { opacity:1; transform:translateX(0); }
+
+/* Card cinematic border flash on hover */
+.card::after {
+  content:''; position:absolute; inset:0;
+  border:1px solid transparent;
+  transition:border-color 0.2s;
+  pointer-events:none;
+}
+.card:hover::after { border-color:rgba(224,16,16,0.15); }
+
+/* Video card tilt shadow */
+.video-card { transform-style:preserve-3d; }
+
+/* Cursor glow trail */
+#cursor-glow {
+  position:fixed; width:300px; height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(224,16,16,0.06) 0%, transparent 70%);
+  pointer-events:none; z-index:1;
+  transform:translate(-50%,-50%);
+  transition:transform 0.15s ease;
+}
+
+/* Hero orb parallax */
+.hero-orb { will-change:transform; }
+
+/* Wipe line between sections */
+.divider {
+  height:1px; overflow:visible; position:relative;
+}
+.divider::after {
+  content:'';
+  position:absolute; left:0; top:0;
+  width:0; height:100%;
+  background:linear-gradient(90deg, transparent, var(--red), transparent);
+  transition:width 1.2s ease;
+  box-shadow:0 0 8px rgba(224,16,16,0.6);
+}
+.divider.revealed::after { width:100%; }
+
+@media(max-width:640px){
+  .lbox-top, .lbox-bot { height:50px; }
+  .intro-logo { font-size:1.6rem; letter-spacing:5px; }
+  #cursor-glow { display:none; }
+}
 </style>
 </head>
 <body>
 
 <canvas id="particles"></canvas>
+<!-- Cinematic intro -->
+<div id="cinematic-intro">
+  <div class="intro-logo" id="introLogo">FRANCESCO<span>LAB</span></div>
+  <div class="intro-line" id="introLine"></div>
+  <div class="intro-sub" id="introSub">Gaming • Strategie • Tecnologia</div>
+</div>
+<div class="lbox-top" id="lboxTop"></div>
+<div class="lbox-bot" id="lboxBot"></div>
+<div id="scanlines"></div>
+<div id="cursor-glow" id="cursorGlow"></div>
+<div id="laser"></div>
+
 
 
 <nav>
@@ -559,6 +723,152 @@ function closeMenu(){
 if(window.innerWidth < 640){
   pts.splice(60);
 }
+
+// ══════════════════════════════════
+// ANIMAZIONI CINEMATOGRAFICHE
+// ══════════════════════════════════
+
+// — CINEMATIC INTRO —
+(function(){
+  const intro = document.getElementById('cinematic-intro');
+  const logo  = document.getElementById('introLogo');
+  const line  = document.getElementById('introLine');
+  const sub   = document.getElementById('introSub');
+  const lbT   = document.getElementById('lboxTop');
+  const lbB   = document.getElementById('lboxBot');
+
+  // Prevent scroll during intro
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(()=>{ logo.classList.add('show'); }, 200);
+  setTimeout(()=>{ line.classList.add('show'); sub.classList.add('show'); }, 400);
+  setTimeout(()=>{
+    intro.classList.add('fade-out');
+    lbT.classList.add('open');
+    lbB.classList.add('open');
+    document.body.style.overflow = '';
+  }, 1800);
+  setTimeout(()=>{ intro.classList.add('gone'); }, 2700);
+})();
+
+// — TEXT SCRAMBLE on H1 —
+(function(){
+  const h1 = document.querySelector('.hero h1');
+  if(!h1) return;
+  const original = 'FRANCESCOLAB';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+  let frame = 0;
+  const totalFrames = 28;
+  // Start after intro fades
+  setTimeout(()=>{
+    const interval = setInterval(()=>{
+      const progress = frame / totalFrames;
+      const revealed = Math.floor(progress * original.length);
+      let display = '';
+      for(let i=0;i<original.length;i++){
+        if(i < revealed) display += original[i];
+        else display += chars[Math.floor(Math.random()*chars.length)];
+      }
+      const mid = 9; // FRANCESCO / LAB split
+      h1.innerHTML = display.slice(0,mid) + '<span class="accent">' + display.slice(mid) + '</span>';
+      frame++;
+      if(frame > totalFrames){
+        h1.innerHTML = 'FRANCESCO<span class="accent">LAB</span>';
+        clearInterval(interval);
+      }
+    }, 45);
+  }, 2000);
+})();
+
+// — LASER SWEEP —
+(function(){
+  const laser = document.getElementById('laser');
+  function sweep(){
+    laser.style.transition = 'none';
+    laser.style.left = '-4px';
+    laser.style.opacity = '1';
+    setTimeout(()=>{
+      laser.style.transition = 'left 1.4s cubic-bezier(.4,0,.2,1)';
+      laser.style.left = '102%';
+      setTimeout(()=>{ laser.style.opacity='0'; }, 1200);
+    }, 30);
+  }
+  // First sweep after intro
+  setTimeout(sweep, 3200);
+  // Then periodic
+  setInterval(sweep, 12000);
+})();
+
+// — CURSOR GLOW —
+(function(){
+  const glow = document.getElementById('cursor-glow');
+  if(!glow) return;
+  let mx=0, my=0, cx=0, cy=0;
+  document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+  function updateGlow(){
+    cx += (mx - cx) * 0.08;
+    cy += (my - cy) * 0.08;
+    glow.style.left = cx + 'px';
+    glow.style.top  = cy + 'px';
+    requestAnimationFrame(updateGlow);
+  }
+  updateGlow();
+})();
+
+// — HERO ORB PARALLAX —
+(function(){
+  const orb = document.querySelector('.hero-orb');
+  if(!orb) return;
+  document.addEventListener('mousemove', e=>{
+    const dx = (e.clientX / window.innerWidth  - 0.5) * 30;
+    const dy = (e.clientY / window.innerHeight - 0.5) * 30;
+    orb.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+  });
+})();
+
+// — STATS COUNTER ANIMATION —
+(function(){
+  const stats = document.querySelectorAll('.stat');
+  const sObs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        sObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.5});
+  stats.forEach(s=>sObs.observe(s));
+})();
+
+// — SECTION TITLE & LABEL REVEAL —
+(function(){
+  const targets = document.querySelectorAll('.section-title, .section-label, .divider');
+  const tObs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('revealed'), 80);
+        tObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.2});
+  targets.forEach(t=>tObs.observe(t));
+})();
+
+// — VIDEO CARD 3D TILT —
+(function(){
+  document.querySelectorAll('.video-card').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `translateY(-4px) perspective(600px) rotateX(${-y*6}deg) rotateY(${x*6}deg)`;
+    });
+    card.addEventListener('mouseleave', ()=>{
+      card.style.transform = '';
+    });
+  });
+})();
+
 </script>
 </body>
 </html>
