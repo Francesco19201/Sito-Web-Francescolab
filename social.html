@@ -315,11 +315,162 @@ footer {
 @media(prefers-reduced-motion: reduce){
   *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
 }
+
+/* ════════════════════════════════
+   ANIMAZIONI CINEMATOGRAFICHE
+   ════════════════════════════════ */
+
+#cinematic-intro {
+  position:fixed; inset:0; z-index:9999;
+  background:#000;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+  pointer-events:all;
+  transition:opacity 0.8s ease;
+}
+#cinematic-intro.fade-out { opacity:0; pointer-events:none; }
+#cinematic-intro.gone { display:none; }
+
+.lbox-top, .lbox-bot {
+  position:fixed; left:0; right:0; z-index:9998;
+  background:#000; height:80px;
+  transition:transform 1s cubic-bezier(.77,0,.18,1);
+}
+.lbox-top { top:0; transform:translateY(0); }
+.lbox-bot { bottom:0; transform:translateY(0); }
+.lbox-top.open { transform:translateY(-100%); }
+.lbox-bot.open { transform:translateY(100%); }
+
+.intro-logo {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.5rem,6vw,3.5rem);
+  font-weight:900; letter-spacing:8px;
+  color:#fff; text-transform:uppercase;
+  opacity:0; transform:scaleX(0.6);
+  transition:opacity 0.6s ease, transform 0.6s cubic-bezier(.22,.68,0,1.2);
+}
+.intro-logo.show { opacity:1; transform:scaleX(1); }
+.intro-logo span { color:#e01010; }
+.intro-line {
+  width:0; height:1px; background:var(--red);
+  margin-top:12px;
+  transition:width 0.7s ease 0.3s;
+  box-shadow:0 0 12px rgba(224,16,16,0.8);
+}
+.intro-line.show { width:clamp(140px,30vw,300px); }
+.intro-sub {
+  font-family:'Syne',sans-serif;
+  font-size:0.65rem; letter-spacing:5px; text-transform:uppercase;
+  color:rgba(255,255,255,0.4); margin-top:10px;
+  opacity:0; transition:opacity 0.5s ease 0.6s;
+}
+.intro-sub.show { opacity:1; }
+
+#laser {
+  position:fixed; top:0; left:-100%; width:3px; height:100%;
+  background:linear-gradient(to bottom, transparent, var(--red), rgba(224,16,16,0.3), transparent);
+  z-index:5; pointer-events:none;
+  box-shadow:0 0 20px rgba(224,16,16,0.8), 0 0 60px rgba(224,16,16,0.3);
+  opacity:0;
+}
+
+#scanlines {
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px
+  );
+  opacity:0.4;
+}
+
+/* Cursor glow */
+#cursor-glow {
+  position:fixed; width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle, rgba(224,16,16,0.05) 0%, transparent 70%);
+  pointer-events:none; z-index:1;
+  transform:translate(-50%,-50%);
+}
+
+/* Page title scramble */
+.page-title { position:relative; }
+
+/* Card 3D tilt */
+.social-card { transform-style:preserve-3d; will-change:transform; }
+
+/* Card entrance - override default animation with more cinematic one */
+.social-card {
+  animation:card-cinema 0.7s cubic-bezier(.22,.68,0,1.2) both;
+}
+.social-card:nth-child(1){ animation-delay:0.2s; }
+.social-card:nth-child(2){ animation-delay:0.38s; }
+@keyframes card-cinema {
+  from { opacity:0; transform:translateY(50px) scale(0.92); filter:blur(4px); }
+  to   { opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+}
+
+/* Icon pulse ring */
+.icon-wrap::after {
+  content:''; position:absolute; inset:-8px; border-radius:inherit;
+  border:1px solid transparent;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.card-twitch:hover .icon-wrap::after {
+  border-color:rgba(145,71,255,0.4);
+  box-shadow:0 0 20px rgba(145,71,255,0.3);
+  animation:ring-pulse 1s ease infinite;
+}
+.card-discord:hover .icon-wrap::after {
+  border-color:rgba(88,101,242,0.4);
+  box-shadow:0 0 20px rgba(88,101,242,0.3);
+  animation:ring-pulse 1s ease infinite;
+}
+@keyframes ring-pulse {
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.08);opacity:0.6}
+}
+
+/* Page title clip reveal */
+.page-title {
+  clip-path:inset(0 100% 0 0);
+  animation:title-reveal 0.9s cubic-bezier(.77,0,.18,1) 2s both;
+}
+@keyframes title-reveal {
+  from{clip-path:inset(0 100% 0 0)}
+  to{clip-path:inset(0 0% 0 0)}
+}
+
+/* Badge cinematic bounce */
+.page-badge {
+  animation:badge-bounce 0.7s cubic-bezier(.22,.68,0,1.6) 1.8s both;
+}
+@keyframes badge-bounce {
+  from{opacity:0;transform:scale(0.7) translateY(10px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+@media(max-width:640px){
+  .lbox-top,.lbox-bot{height:50px;}
+  .intro-logo{font-size:1.6rem;letter-spacing:5px;}
+  #cursor-glow{display:none;}
+}
 </style>
 </head>
 <body>
 
 <canvas id="particles"></canvas>
+<!-- Cinematic intro -->
+<div id="cinematic-intro">
+  <div class="intro-logo" id="introLogo">FRANCESCO<span>LAB</span></div>
+  <div class="intro-line" id="introLine"></div>
+  <div class="intro-sub" id="introSub">I Miei Social</div>
+</div>
+<div class="lbox-top" id="lboxTop"></div>
+<div class="lbox-bot" id="lboxBot"></div>
+<div id="scanlines"></div>
+<div id="cursor-glow"></div>
+<div id="laser"></div>
+
 
 <!-- NAV -->
 <nav>
@@ -453,6 +604,96 @@ function closeMenu(){
 
 // Meno particelle su mobile
 if(window.innerWidth < 640){ pts.splice(50); }
+
+// ══════════════════════════════════
+// ANIMAZIONI CINEMATOGRAFICHE
+// ══════════════════════════════════
+
+// — INTRO —
+(function(){
+  const intro = document.getElementById('cinematic-intro');
+  const logo  = document.getElementById('introLogo');
+  const line  = document.getElementById('introLine');
+  const sub   = document.getElementById('introSub');
+  const lbT   = document.getElementById('lboxTop');
+  const lbB   = document.getElementById('lboxBot');
+  document.body.style.overflow = 'hidden';
+  setTimeout(()=>{ logo.classList.add('show'); }, 200);
+  setTimeout(()=>{ line.classList.add('show'); sub.classList.add('show'); }, 400);
+  setTimeout(()=>{
+    intro.classList.add('fade-out');
+    lbT.classList.add('open'); lbB.classList.add('open');
+    document.body.style.overflow = '';
+  }, 1800);
+  setTimeout(()=>{ intro.classList.add('gone'); }, 2700);
+})();
+
+// — PAGE TITLE SCRAMBLE —
+(function(){
+  const title = document.querySelector('.page-title');
+  if(!title) return;
+  const original = 'I Miei Social';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#@$%&';
+  let frame = 0; const total = 22;
+  setTimeout(()=>{
+    const iv = setInterval(()=>{
+      const prog = frame / total;
+      const rev = Math.floor(prog * original.length);
+      let out = '';
+      for(let i=0;i<original.length;i++){
+        if(original[i]===' ') out+=' ';
+        else if(i < rev) out+=original[i];
+        else out+=chars[Math.floor(Math.random()*chars.length)];
+      }
+      const parts = out.split(' ');
+      title.innerHTML = parts.slice(0,2).join(' ') + ' <span class="accent">' + (parts[2]||'') + '</span>';
+      frame++;
+      if(frame > total){
+        title.innerHTML = 'I Miei <span class="accent">Social</span>';
+        clearInterval(iv);
+      }
+    }, 50);
+  }, 2100);
+})();
+
+// — LASER —
+(function(){
+  const laser = document.getElementById('laser');
+  function sweep(){
+    laser.style.transition='none'; laser.style.left='-4px'; laser.style.opacity='1';
+    setTimeout(()=>{
+      laser.style.transition='left 1.4s cubic-bezier(.4,0,.2,1)';
+      laser.style.left='102%';
+      setTimeout(()=>{ laser.style.opacity='0'; }, 1200);
+    }, 30);
+  }
+  setTimeout(sweep, 3200);
+  setInterval(sweep, 12000);
+})();
+
+// — CURSOR GLOW —
+(function(){
+  const glow = document.getElementById('cursor-glow');
+  if(!glow) return;
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function upd(){ cx+=(mx-cx)*0.08; cy+=(my-cy)*0.08; glow.style.left=cx+'px'; glow.style.top=cy+'px'; requestAnimationFrame(upd); }
+  upd();
+})();
+
+// — CARD 3D TILT —
+(function(){
+  document.querySelectorAll('.social-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-0.5;
+      const y=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform=`translateY(-6px) scale(1.02) perspective(800px) rotateX(${-y*8}deg) rotateY(${x*8}deg)`;
+    });
+    card.addEventListener('mouseleave',()=>{ card.style.transform=''; });
+  });
+})();
+
 </script>
 </body>
 </html>
